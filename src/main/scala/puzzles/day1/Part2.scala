@@ -1,6 +1,6 @@
 package puzzles.day1
 
-import utils.Depth
+import utils.IntegerString
 
 import scala.io.Source
 import scala.util.Using
@@ -12,7 +12,7 @@ object Part2 extends App {
         file
           .getLines()
           .sliding(3)
-          .map(lines => lines.map(Depth.parse).sum)
+          .map(lines => lines.map(IntegerString.parse).sum)
           .sliding(2)
           .map(
             depths => {

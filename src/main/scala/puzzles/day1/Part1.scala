@@ -1,6 +1,6 @@
 package puzzles.day1
 
-import utils.Depth
+import utils.IntegerString
 
 import scala.io.Source
 import scala.util.Using
@@ -14,8 +14,8 @@ object Part1 extends App {
           .sliding(2)
           .map(
             lines => {
-              val previousDepth = Depth.parse(lines.head)
-              val currentDepth = Depth.parse(lines.last)
+              val previousDepth = IntegerString.parse(lines.head)
+              val currentDepth = IntegerString.parse(lines.last)
               if (previousDepth < currentDepth) 1 else 0
             }
           ).sum
