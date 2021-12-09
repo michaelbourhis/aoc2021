@@ -1,6 +1,6 @@
 package puzzles.day6
 
-import fish.LanterFish
+import animals.LanterFish
 
 import scala.io.Source
 import scala.util.Using

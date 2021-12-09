@@ -1,4 +1,4 @@
-package fish
+package animals
 
 import scala.annotation.tailrec
 
