@@ -1,6 +1,6 @@
 package puzzles.day2
 
-import navigation.{AimedPosition, Movement, Position}
+import navigation.{AimedPosition, Movement}
 
 import scala.io.Source
 import scala.util.Using
