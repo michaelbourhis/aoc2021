@@ -1,5 +1,7 @@
 package submarine
 
+import utils.BitsConversion.{bitsToInt, bitsToLong}
+
 import scala.annotation.tailrec
 
 abstract class Packet(val version: Int) {
@@ -147,14 +149,4 @@ object Bits {
     case 'E' => Seq(true, true, true, false)
     case 'F' => Seq(true, true, true, true)
   }
-
-  def bitsToInt(bits: Seq[Boolean]): Int =
-    bits.foldLeft(0)(
-      (i, b) => (i << 1) + (if (b) 1 else 0)
-    )
-
-  def bitsToLong(bits: Seq[Boolean]): Long =
-    bits.foldLeft(0L)(
-      (i, b) => (i << 1) + (if (b) 1 else 0)
-    )
 }
