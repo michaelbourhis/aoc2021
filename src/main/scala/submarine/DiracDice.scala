@@ -5,10 +5,9 @@ import scala.annotation.tailrec
 case class Player(id: Int, position: Int, score: Int = 0, turns: Int = 0) {
   def playADeterministicTurn(dice: DeterministicDice): (Player, DeterministicDice) = {
     val (diceAfterTurn, results) = (1 to 3).foldLeft((dice, Seq.empty[Int]))((diceAndResults, _) => diceAndResults match {
-      case (d: DeterministicDice, results) => {
+      case (d: DeterministicDice, results) =>
         val rolled = d.roll
         (rolled, results ++ Seq(rolled.face))
-      }
     })
     val newPosition = 1 + (position + results.sum - 1) % 10
     (this.copy(position = newPosition, score = score + newPosition, turns = turns + 1), diceAfterTurn)

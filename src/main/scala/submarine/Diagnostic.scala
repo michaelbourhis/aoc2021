@@ -18,7 +18,7 @@ object Diagnostic {
   def initBitDistributions: BitDistributions = Array()
 
   def separateZerosAndOnes(position: Int)(zerosAndOnes: (Array[Bits], Array[Bits]), bits: Bits): (Array[Bits], Array[Bits]) =
-    if(bits(position)) (zerosAndOnes._1, zerosAndOnes._2 ++ Array(bits))
+    if (bits(position)) (zerosAndOnes._1, zerosAndOnes._2 ++ Array(bits))
     else (zerosAndOnes._1 ++ Array(bits), zerosAndOnes._2)
 
   def parse(bitDistributions: BitDistributions, newDiagnostic: Bits): BitDistributions = {
@@ -35,38 +35,38 @@ object Diagnostic {
   }
 
   def powerConsumption(bitDistributions: BitDistributions): Int = {
-    val gammaRate = Integer.parseInt(bitDistributions.map(b => if(b>0) "1" else "0").mkString, 2)
-    val epsilonRate = Integer.parseInt(bitDistributions.map(b => if(b>0) "0" else "1").mkString, 2)
+    val gammaRate = Integer.parseInt(bitDistributions.map(b => if (b > 0) "1" else "0").mkString, 2)
+    val epsilonRate = Integer.parseInt(bitDistributions.map(b => if (b > 0) "0" else "1").mkString, 2)
     gammaRate * epsilonRate
   }
 
   def lifeSupportRating(beginsWithZero: Array[Bits], beginsWithOne: Array[Bits]): Int = {
     val (oxygenRatingInit, co2ScrubberRatingInit) =
-      if(beginsWithZero.length > beginsWithOne.length) (beginsWithZero, beginsWithOne)
+      if (beginsWithZero.length > beginsWithOne.length) (beginsWithZero, beginsWithOne)
       else (beginsWithOne, beginsWithZero)
     Diagnostic.oxygenRating(oxygenRatingInit, 1) * Diagnostic.co2ScrubberRating(co2ScrubberRatingInit, 1)
   }
 
   @tailrec
   def oxygenRating(possibleBits: Array[Bits], position: Int): Int = {
-    if(possibleBits.length == 1) bitsToInt(possibleBits(0))
+    if (possibleBits.length == 1) bitsToInt(possibleBits(0))
     else {
       val (zeros, ones) = possibleBits.foldLeft(Diagnostic.initZerosAndOnes)(separateZerosAndOnes(position))
-      if(zeros.length > ones.length) oxygenRating(zeros, position + 1)
+      if (zeros.length > ones.length) oxygenRating(zeros, position + 1)
       else oxygenRating(ones, position + 1)
     }
   }
 
   @tailrec
   def co2ScrubberRating(possibleBits: Array[Bits], position: Int): Int = {
-    if(possibleBits.length == 1) bitsToInt(possibleBits(0))
+    if (possibleBits.length == 1) bitsToInt(possibleBits(0))
     else {
       val (zeros, ones) = possibleBits.foldLeft(Diagnostic.initZerosAndOnes)(separateZerosAndOnes(position))
-      if(ones.length < zeros.length) co2ScrubberRating(ones, position + 1)
+      if (ones.length < zeros.length) co2ScrubberRating(ones, position + 1)
       else co2ScrubberRating(zeros, position + 1)
     }
   }
 
-  def bitsToInt(bits: Bits): Int = Integer.parseInt(bits.map(b => if(b) "1" else "0").mkString, 2)
+  def bitsToInt(bits: Bits): Int = Integer.parseInt(bits.map(b => if (b) "1" else "0").mkString, 2)
 
 }

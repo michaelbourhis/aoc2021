@@ -25,16 +25,6 @@ case class Line(incompleteChunk: Seq[Chunk] = Seq.empty, illegalCharacter: Optio
 case class Chunk(openingSymbol: Char)
 
 object Subsystem {
-  def openingChar(char: Char): Boolean =
-    Seq('(', '[', '{', '<').contains(char)
-
-  def correspondingOpeningChunk(char: Char): Chunk = char match {
-    case ')' => Chunk('(')
-    case ']' => Chunk('[')
-    case '}' => Chunk('{')
-    case '>' => Chunk('<')
-  }
-
   def parse(representation: String): Line =
     representation
       .toCharArray
@@ -51,4 +41,14 @@ object Subsystem {
             line.copy(illegalCharacter = Some(newChar))
         }
       )
+
+  def openingChar(char: Char): Boolean =
+    Seq('(', '[', '{', '<').contains(char)
+
+  def correspondingOpeningChunk(char: Char): Chunk = char match {
+    case ')' => Chunk('(')
+    case ']' => Chunk('[')
+    case '}' => Chunk('{')
+    case '>' => Chunk('<')
+  }
 }

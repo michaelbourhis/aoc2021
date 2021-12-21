@@ -1,6 +1,6 @@
 package puzzles.day6
 
-import animals.LanterFish
+import animals.LanternFish
 
 import scala.io.Source
 import scala.util.Using
@@ -13,9 +13,9 @@ object Part2 extends App {
       file =>
         val initialFishState = file
           .getLines()
-          .map(LanterFish.initCycle)
+          .map(LanternFish.initCycle)
           .next()
-        LanterFish
+        LanternFish
           .reproduction(initialFishState, numberOfDays)
           .values
           .sum

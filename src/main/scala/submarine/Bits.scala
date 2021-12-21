@@ -6,11 +6,13 @@ import scala.annotation.tailrec
 
 abstract class Packet(val version: Int) {
   def totalVersion: Int
+
   def apply: Long
 }
 
 case class LiteralValue(override val version: Int, value: Long) extends Packet(version) {
   override def totalVersion: Int = version
+
   override def apply: Long = value
 }
 
@@ -37,7 +39,7 @@ case class Maximum(override val version: Int, override val subPackets: Seq[Packe
 case class GreaterThan(override val version: Int, override val subPackets: Seq[Packet] = Seq.empty) extends Operator(version, subPackets) {
   override def apply: Long = {
     val subPacketValues = subPackets.map(_.apply)
-    if(subPacketValues.head > subPacketValues.last) 1L
+    if (subPacketValues.head > subPacketValues.last) 1L
     else 0L
   }
 }
@@ -45,7 +47,7 @@ case class GreaterThan(override val version: Int, override val subPackets: Seq[P
 case class LessThan(override val version: Int, override val subPackets: Seq[Packet] = Seq.empty) extends Operator(version, subPackets) {
   override def apply: Long = {
     val subPacketValues = subPackets.map(_.apply)
-    if(subPacketValues.head < subPacketValues.last) 1L
+    if (subPacketValues.head < subPacketValues.last) 1L
     else 0L
   }
 }
@@ -53,7 +55,7 @@ case class LessThan(override val version: Int, override val subPackets: Seq[Pack
 case class EqualTo(override val version: Int, override val subPackets: Seq[Packet] = Seq.empty) extends Operator(version, subPackets) {
   override def apply: Long = {
     val subPacketValues = subPackets.map(_.apply)
-    if(subPacketValues.head == subPacketValues.last) 1L
+    if (subPacketValues.head == subPacketValues.last) 1L
     else 0L
   }
 }
@@ -61,6 +63,25 @@ case class EqualTo(override val version: Int, override val subPackets: Seq[Packe
 object Bits {
   def parseTransmission(transmission: String): Seq[Boolean] =
     transmission.toCharArray.flatMap(hexToBits)
+
+  def hexToBits(hex: Char): Seq[Boolean] = hex match {
+    case '0' => Seq(false, false, false, false)
+    case '1' => Seq(false, false, false, true)
+    case '2' => Seq(false, false, true, false)
+    case '3' => Seq(false, false, true, true)
+    case '4' => Seq(false, true, false, false)
+    case '5' => Seq(false, true, false, true)
+    case '6' => Seq(false, true, true, false)
+    case '7' => Seq(false, true, true, true)
+    case '8' => Seq(true, false, false, false)
+    case '9' => Seq(true, false, false, true)
+    case 'A' => Seq(true, false, true, false)
+    case 'B' => Seq(true, false, true, true)
+    case 'C' => Seq(true, true, false, false)
+    case 'D' => Seq(true, true, false, true)
+    case 'E' => Seq(true, true, true, false)
+    case 'F' => Seq(true, true, true, true)
+  }
 
   @tailrec
   def readPackets(bits: Seq[Boolean], packets: Seq[Packet] = Seq.empty, maxPackets: Int = -1): (Seq[Packet], Seq[Boolean]) = {
@@ -108,7 +129,6 @@ object Bits {
     )
   }
 
-
   def getLiteralPacket(bits: Seq[Boolean], version: Int): (LiteralValue, Seq[Boolean]) = {
     val (digitBits, remainingBits) = readDigits(bits)
     (
@@ -130,23 +150,4 @@ object Bits {
         bits.slice(1, 5),
         bits.drop(5)
       )
-
-  def hexToBits(hex: Char): Seq[Boolean] = hex match {
-    case '0' => Seq(false, false, false, false)
-    case '1' => Seq(false, false, false, true)
-    case '2' => Seq(false, false, true, false)
-    case '3' => Seq(false, false, true, true)
-    case '4' => Seq(false, true, false, false)
-    case '5' => Seq(false, true, false, true)
-    case '6' => Seq(false, true, true, false)
-    case '7' => Seq(false, true, true, true)
-    case '8' => Seq(true, false, false, false)
-    case '9' => Seq(true, false, false, true)
-    case 'A' => Seq(true, false, true, false)
-    case 'B' => Seq(true, false, true, true)
-    case 'C' => Seq(true, true, false, false)
-    case 'D' => Seq(true, true, false, true)
-    case 'E' => Seq(true, true, true, false)
-    case 'F' => Seq(true, true, true, true)
-  }
 }

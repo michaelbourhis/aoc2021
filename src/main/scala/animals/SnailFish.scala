@@ -40,7 +40,7 @@ case class Pair(left: Element, right: Element) extends Element() {
     } else {
       val (leftReduced, leftAction) = left.reducePairs(level + 1)
       leftAction match {
-        case Nothing => {
+        case Nothing =>
           val (rightReduced, rightAction) = right.reducePairs(level + 1)
           rightAction match {
             case Nothing => (this, Nothing)
@@ -48,7 +48,6 @@ case class Pair(left: Element, right: Element) extends Element() {
             case PropagateLeft(l) => (Pair(leftReduced.propagateRight(l), rightReduced), ExplodedPropagated)
             case actionDone: ActionDone => (this.copy(right = rightReduced), actionDone)
           }
-        }
         case Explodes(l, r) => (Pair(left = leftReduced, right = right.propagateLeft(r)), PropagateLeft(l))
         case PropagateRight(r) => (Pair(left = leftReduced, right.propagateLeft(r)), ExplodedPropagated)
         case actionDone: ActionDone => (this.copy(left = leftReduced), actionDone)
@@ -59,13 +58,12 @@ case class Pair(left: Element, right: Element) extends Element() {
   override def reduceElements(): (Element, ActionDone) = {
     val (leftReduced, leftAction) = left.reduceElements()
     leftAction match {
-      case Nothing => {
+      case Nothing =>
         val (rightReduced, rightAction) = right.reduceElements()
         rightAction match {
           case Nothing => (this, Nothing)
           case Splits => (this.copy(right = rightReduced), Splits)
         }
-      }
       case Splits => (this.copy(left = leftReduced), Splits)
     }
   }
@@ -96,7 +94,7 @@ case class Number(value: Int) extends Element() {
 }
 
 
-object Snailfish {
+object SnailFish {
   def parseProblem(representation: String): Pair = {
     val (leftElement, rightElement, _) = parsePairElements(representation.drop(1))
     Pair(leftElement, rightElement)
@@ -126,13 +124,12 @@ object Snailfish {
   @tailrec
   def reduceIt(pair: Pair): Pair = {
     pair.reducePairs(1) match {
-      case (p: Pair, Nothing) => {
+      case (p: Pair, Nothing) =>
         p.reduceElements() match {
           case (pFinal: Pair, Nothing) => pFinal
           case (pFinal: Pair, _: ActionDone) => reduceIt(pFinal)
           case _ => throw new Exception(s"We should not have a Number here! $pair")
         }
-      }
       case (p: Pair, _: ActionDone) => reduceIt(p)
       case _ => throw new Exception(s"We should not have a Number here! $pair")
     }

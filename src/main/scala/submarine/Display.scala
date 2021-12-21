@@ -4,6 +4,7 @@ case class Digit(segments: Seq[Char]) {
   def includedIn(other: Digit): Boolean =
     segments.forall(c => other.segments.contains(c))
 }
+
 case class Note(patterns: Seq[Digit], output: Seq[Digit], digitMapping: Map[Digit, Int] = Map.empty)
 
 object Display {
@@ -15,12 +16,6 @@ object Display {
   val digitZeroOrSixOrNineSize = 6
   val obviousSizes = Seq(digitOneSize, digitFourSize, digitSevenSize, digitEightSize)
 
-  def toDigit(chars: String): Digit =
-    Digit(chars.toCharArray.toSeq.sorted)
-
-  def parseDigits(stringListOfDigits: String): Seq[Digit] =
-    stringListOfDigits.trim.split(" ").map(toDigit)
-
   def parse(representation: String): Note = {
     representation.split("\\|") match {
       case Array(patterns, output) =>
@@ -30,6 +25,12 @@ object Display {
         )
     }
   }
+
+  def parseDigits(stringListOfDigits: String): Seq[Digit] =
+    stringListOfDigits.trim.split(" ").map(toDigit)
+
+  def toDigit(chars: String): Digit =
+    Digit(chars.toCharArray.toSeq.sorted)
 
   def guessDigits(note: Note): Note = {
     val digitOne = note.patterns.find(_.segments.length == digitOneSize).get
@@ -44,7 +45,7 @@ object Display {
     val digitSix = digitZeroOrSixOrNine.find(d => !d.equals(digitNine) && !d.equals(digitZero)).get
     val digitFive = digitTwoOrThreeOrFive.find(d => !d.equals(digitThree) && d.includedIn(digitNine)).get
     val digitTwo = digitTwoOrThreeOrFive.find(d => !d.equals(digitThree) && !d.equals(digitFive)).get
-    note.copy(digitMapping=Map(
+    note.copy(digitMapping = Map(
       digitOne -> 1,
       digitTwo -> 2,
       digitThree -> 3,

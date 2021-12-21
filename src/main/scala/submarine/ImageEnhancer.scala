@@ -23,6 +23,9 @@ object ImageEnhancer {
     case '#' => true
   }.toSeq
 
+  def darkLine(size: Int): ImageLine =
+    Seq.fill(size)(false)
+
   def enhance(enhancementAlgorithm: EnhancementAlgorithm, inputImage: Image): Image = {
     val outputImage = (1 until inputImage.length - 1).map(i =>
       (1 until inputImage.head.length - 1).map(j => {
@@ -44,9 +47,6 @@ object ImageEnhancer {
     Console.println()
     outputImage
   }
-
-  def darkLine(size: Int): ImageLine =
-    Seq.fill(size)(false)
 
   def applyAlgorithm(pixels: Seq[Boolean], enhancementAlgorithm: EnhancementAlgorithm): Boolean = {
     val position = bitsToInt(pixels)

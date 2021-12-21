@@ -43,10 +43,10 @@ object Grid {
 
   @tailrec
   def drawUntilLastCompletes(grids: Seq[Grid], drawnNumbers: Seq[String], winningGrid: Option[Grid] = None): Option[Grid] = {
-    if(drawnNumbers.isEmpty) return winningGrid
+    if (drawnNumbers.isEmpty) return winningGrid
     val markedGrids = grids.map(Grid.mark(drawnNumbers.head))
     val winningGrids = markedGrids.filter(_.isCompleted)
-    val lastWinningGrid = if(winningGrids.isEmpty) winningGrid else Some(winningGrids.last)
+    val lastWinningGrid = if (winningGrids.isEmpty) winningGrid else Some(winningGrids.last)
     Grid.drawUntilLastCompletes(markedGrids.filterNot(_.isCompleted), drawnNumbers.tail, winningGrid = lastWinningGrid)
   }
 }

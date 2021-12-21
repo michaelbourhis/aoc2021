@@ -1,6 +1,6 @@
 package puzzles.day17
 
-import submarine.{Probe, Velocity}
+import submarine.Probe
 
 import scala.io.Source
 import scala.util.Using

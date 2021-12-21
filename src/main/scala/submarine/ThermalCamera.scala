@@ -1,15 +1,19 @@
 package submarine
 
-case class Dot(x: Int, y:Int) {
+case class Dot(x: Int, y: Int) {
   def foldHorizontally(position: Int): Dot =
-    if(y<position) this
+    if (y < position) this
     else Dot(x, 2 * position - y)
+
   def foldVertically(position: Int): Dot =
-    if(x<position) this
+    if (x < position) this
     else Dot(2 * position - x, y)
 }
+
 sealed abstract class Fold
+
 case class HorizontalFold(position: Int) extends Fold
+
 case class VerticalFold(position: Int) extends Fold
 
 object ThermalCamera {

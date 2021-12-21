@@ -57,14 +57,6 @@ case class Beacon(x: Int, y: Int, z: Int) {
 
   def changeOrigin(origin: (Int, Int, Int)): Beacon = Beacon(x + origin._1, y + origin._2, z + origin._3)
 
-  def negative: Beacon = this.copy(x = -x, y = -y)
-
-  def rotate: Beacon = this.copy(y = -z, z = y)
-
-  def faceUpY: Beacon = Beacon(y, z, x)
-
-  def faceUpZ: Beacon = Beacon(z, x, y)
-
   def rotate(rotation: Rotation): Beacon = rotation match {
     case NoRotation => this
     case RotateOne => this.rotate
@@ -91,6 +83,14 @@ case class Beacon(x: Int, y: Int, z: Int) {
     case FaceUpZNegativeRotateTwo => this.faceUpZ.negative.rotate.rotate
     case FaceUpZNegativeRotateThree => this.faceUpZ.negative.rotate.rotate.rotate
   }
+
+  def negative: Beacon = this.copy(x = -x, y = -y)
+
+  def rotate: Beacon = this.copy(y = -z, z = y)
+
+  def faceUpY: Beacon = Beacon(y, z, x)
+
+  def faceUpZ: Beacon = Beacon(z, x, y)
 }
 
 case class Scanner(id: Int, beacons: Seq[Beacon], origin: (Int, Int, Int) = (-1, -1, -1)) {
@@ -148,10 +148,10 @@ object Scanner {
 
   @tailrec
   def matchAll(toMatch: Seq[Scanner], alreadyMatched: Seq[Scanner]): Seq[Scanner] = {
-    if(toMatch.isEmpty) alreadyMatched
+    if (toMatch.isEmpty) alreadyMatched
     else {
       val newMatches = toMatch.map(notMatched => {
-        val matches = matchPair(Scanner(0, alreadyMatched.flatMap(_.beacons.toSet.toSeq), (0,0,0)), notMatched)
+        val matches = matchPair(Scanner(0, alreadyMatched.flatMap(_.beacons.toSet.toSeq), (0, 0, 0)), notMatched)
         if (matches.nonEmpty) {
           val (rotation, origin) = matches.head
           Some(notMatched.copy(

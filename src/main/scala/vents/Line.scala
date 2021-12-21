@@ -11,6 +11,17 @@ case class MapOfThePoints(points: Map[Point, Int]) {
 }
 
 object Line {
+  def parseAllLines(representation: String): Line = {
+    val line = parseHorizontalAndVertical(representation)
+    if (line.points.isEmpty) {
+      val Seq(start, end) = startAndEndPoints(representation)
+      val stepX = if (start.x <= end.x) 1 else -1
+      val stepY = if (start.y <= end.y) 1 else -1
+      Line((0 to (end.x - start.x) * stepX).map(i => Point(start.x + i * stepX, start.y + i * stepY)))
+    }
+    else line
+  }
+
   def startAndEndPoints(representation: String): Seq[Point] =
     representation
       .split(" -> ")
@@ -29,17 +40,6 @@ object Line {
     }
     else
       Line(Seq.empty)
-  }
-
-  def parseAllLines(representation: String): Line = {
-    val line = parseHorizontalAndVertical(representation)
-    if(line.points.isEmpty) {
-      val Seq(start, end) = startAndEndPoints(representation)
-      val stepX = if (start.x <= end.x) 1 else -1
-      val stepY = if (start.y <= end.y) 1 else -1
-      Line((0 to (end.x - start.x)*stepX).map(i => Point(start.x + i * stepX, start.y + i * stepY)))
-    }
-    else line
   }
 
   def initMapOfPoints: MapOfThePoints = MapOfThePoints(Map.empty[Point, Int])

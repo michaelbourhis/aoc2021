@@ -2,11 +2,10 @@ package animals
 
 import scala.annotation.tailrec
 
-object LanterFish {
+object LanternFish {
+  type FishState = Map[Int, Long]
   val cycleLength = 6
   val cycleInitLength = 2
-
-  type FishState = Map[Int, Long]
 
   def initCycle(representation: String): FishState =
     representation
@@ -25,8 +24,8 @@ object LanterFish {
         Seq((cycleLength, numberOfFish), (cycleLength + cycleInitLength, numberOfFish))
       ).getOrElse(Seq.empty).toMap
       val otherFish = fishState.keys.filterNot(_ == 0).map(day => (day - 1, fishState(day)))
-      val newFishState = reproducingFish ++ otherFish.map{
-        case (day,numberOfFish) => day -> (numberOfFish + reproducingFish.getOrElse(day,0L))
+      val newFishState = reproducingFish ++ otherFish.map {
+        case (day, numberOfFish) => day -> (numberOfFish + reproducingFish.getOrElse(day, 0L))
       }
       reproduction(newFishState, daysLeft - 1)
     }

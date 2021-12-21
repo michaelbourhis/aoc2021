@@ -1,6 +1,6 @@
 package puzzles.day18
 
-import animals.{Pair, Snailfish}
+import animals.{Pair, SnailFish}
 
 import scala.io.Source
 import scala.util.Using
@@ -10,15 +10,15 @@ object Part2 extends App {
     Using.resource(Source.fromResource("day18.txt")) {
       file =>
         val problems = file.getLines().toSeq
-          .map(Snailfish.parseProblem)
-          .map(Snailfish.reduceIt)
+          .map(SnailFish.parseProblem)
+          .map(SnailFish.reduceIt)
         (0 until problems.length - 1).flatMap(idx1 => {
-          (idx1+1 until problems.length).flatMap(idx2 => {
+          (idx1 + 1 until problems.length).flatMap(idx2 => {
             val xPlusY = Pair(problems(idx1), problems(idx2))
             val yPlusX = Pair(problems(idx2), problems(idx1))
             Seq(
-              Snailfish.reduceIt(xPlusY).magnitude(),
-              Snailfish.reduceIt(yPlusX).magnitude()
+              SnailFish.reduceIt(xPlusY).magnitude(),
+              SnailFish.reduceIt(yPlusX).magnitude()
             )
           })
         }).max

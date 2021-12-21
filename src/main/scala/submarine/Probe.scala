@@ -35,11 +35,6 @@ object Probe {
     }
   }
 
-  def optimumVelocity(targetArea: TargetArea): Int = {
-    val bottomOfTheTrench = targetArea.minY
-    -1 - bottomOfTheTrench
-  }
-
   def velocityValues(targetArea: TargetArea): (Int, Int, Int, Int) = {
     val (startX, endX) =
       if (targetArea.minX <= 0 && targetArea.maxX >= 0) (targetArea.minX, targetArea.maxX)
@@ -50,6 +45,11 @@ object Probe {
       optimumVelocity(targetArea)
     )
     (startX, endX, startY, endY)
+  }
+
+  def optimumVelocity(targetArea: TargetArea): Int = {
+    val bottomOfTheTrench = targetArea.minY
+    -1 - bottomOfTheTrench
   }
 
   @tailrec

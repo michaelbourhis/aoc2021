@@ -11,7 +11,7 @@ object Part1 extends App {
       file =>
         val scanners = Scanner.parseScanner(file.getLines())
         Scanner
-          .matchAll(scanners.tail, Seq(scanners.head.copy(origin = (0,0,0))))
+          .matchAll(scanners.tail, Seq(scanners.head.copy(origin = (0, 0, 0))))
           .flatMap(_.beacons)
           .toSet
           .size

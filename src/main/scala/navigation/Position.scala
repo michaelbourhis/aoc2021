@@ -2,6 +2,7 @@ package navigation
 
 case class Position(hPos: Int, depth: Int) {
   def coordinates: String = f"Horizontal position: $hPos, depth: $depth"
+
   def multipliedCoordinates: Int = hPos * depth
 }
 
