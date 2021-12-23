@@ -9,36 +9,20 @@ case class Cuboid(minX: Int, maxX: Int, minY: Int, maxY: Int, minZ: Int, maxZ: I
     BigInt(1) * (maxX - minX + 1) * (maxY - minY + 1) * (maxZ - minZ + 1)
 
   def subtract(other: Cuboid): Seq[Cuboid] =
-    Seq(
-      Cuboid(minX, other.minX - 1, minY, other.minY - 1, minZ, other.minZ - 1),
-      Cuboid(other.minX, other.maxX, minY, other.minY - 1, minZ, other.minZ - 1),
-      Cuboid(other.maxX + 1, maxX, minY, other.minY - 1, minZ, other.minZ - 1),
-      Cuboid(minX, other.minX - 1, other.minY, other.maxY, minZ, other.minZ - 1),
-      Cuboid(other.minX, other.maxX, other.minY, other.maxY, minZ, other.minZ - 1),
-      Cuboid(other.maxX + 1, maxX, other.minY, other.maxY, minZ, other.minZ - 1),
-      Cuboid(minX, other.minX - 1, other.maxY + 1, maxY, minZ, other.minZ - 1),
-      Cuboid(other.minX, other.maxX, other.maxY + 1, maxY, minZ, other.minZ - 1),
-      Cuboid(other.maxX + 1, maxX, other.maxY + 1, maxY, minZ, other.minZ - 1),
-      Cuboid(minX, other.minX - 1, minY, other.minY - 1, other.minZ, other.maxZ),
-      Cuboid(other.minX, other.maxX, minY, other.minY - 1, other.minZ, other.maxZ),
-      Cuboid(other.maxX + 1, maxX, minY, other.minY - 1, other.minZ, other.maxZ),
-      Cuboid(minX, other.minX - 1, other.minY, other.maxY, other.minZ, other.maxZ),
-      Cuboid(other.maxX + 1, maxX, other.minY, other.maxY, other.minZ, other.maxZ),
-      Cuboid(minX, other.minX - 1, other.maxY + 1, maxY, other.minZ, other.maxZ),
-      Cuboid(other.minX, other.maxX, other.maxY + 1, maxY, other.minZ, other.maxZ),
-      Cuboid(other.maxX + 1, maxX, other.maxY + 1, maxY, other.minZ, other.maxZ),
-      Cuboid(minX, other.minX - 1, minY, other.minY - 1, other.maxZ + 1, maxZ),
-      Cuboid(other.minX, other.maxX, minY, other.minY - 1, other.maxZ + 1, maxZ),
-      Cuboid(other.maxX + 1, maxX, minY, other.minY - 1, other.maxZ + 1, maxZ),
-      Cuboid(minX, other.minX - 1, other.minY, other.maxY, other.maxZ + 1, maxZ),
-      Cuboid(other.minX, other.maxX, other.minY, other.maxY, other.maxZ + 1, maxZ),
-      Cuboid(other.maxX + 1, maxX, other.minY, other.maxY, other.maxZ + 1, maxZ),
-      Cuboid(minX, other.minX - 1, other.maxY + 1, maxY, other.maxZ + 1, maxZ),
-      Cuboid(other.minX, other.maxX, other.maxY + 1, maxY, other.maxZ + 1, maxZ),
-      Cuboid(other.maxX + 1, maxX, other.maxY + 1, maxY, other.maxZ + 1, maxZ),
-    )
-      .map(_.cuboidInGrid(minX, maxX, minY, maxY, minZ, maxZ))
-      .filterNot(_.emptyCuboid)
+    if (other.maxX < minX || other.minX > maxX || other.maxY < minY || other.minY > maxY || other.maxZ < minZ || other.minZ > maxZ) Seq(this)
+    else {
+      val cutOnX = Seq(this.copy(maxX = other.minX - 1), this.copy(minX = other.maxX + 1))
+      val xSlice = this.copy(minX = other.minX, maxX = other.maxX)
+      val cutOnY = Seq(xSlice.copy(maxY = other.minY - 1), xSlice.copy(minY = other.maxY + 1))
+      val xySlice = xSlice.copy(minY = other.minY, maxY = other.maxY)
+      val cutOnZ = Seq(xySlice.copy(maxZ = other.minZ - 1), xySlice.copy(minZ = other.maxZ + 1))
+      (cutOnX ++ cutOnY ++ cutOnZ)
+        .map(fitsMySelf)
+        .filterNot(_.emptyCuboid)
+    }
+
+  def fitsMySelf(cuboid: Cuboid): Cuboid =
+    cuboid.cuboidInGrid(minX, maxX, minY, maxY, minZ, maxZ)
 
   def cuboidInGrid(
                     gridMinX: Int, gridMaxX: Int,
@@ -66,16 +50,6 @@ case class RebootStep(on: Boolean, cuboid: Cuboid) {
                        gridMinZ: Int, gridMaxZ: Int
                      ): RebootStep =
     this.copy(cuboid = cuboid.cuboidInGrid(gridMinX, gridMaxX, gridMinY, gridMaxY, gridMinZ, gridMaxZ))
-
-  def combine(cuboids: Seq[Cuboid]): Seq[Cuboid] =
-    if (on)
-      cuboids ++ cuboids.foldLeft(Seq(cuboid))((piecesOfCuboids, c) => {
-        piecesOfCuboids.flatMap(_.subtract(c))
-      })
-    else
-      cuboids.foldLeft(Seq.empty[Cuboid])((remainingPiecesOfCuboids, c) => {
-        remainingPiecesOfCuboids ++ c.subtract(cuboid)
-      })
 }
 
 object Reactor {
